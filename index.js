@@ -5,7 +5,7 @@ var data00 = [
     ["Dept. of Defense - Military Programs", 345],
     ["Dept. of Education", 41.1],
     ["Dept. of Energy", 18.4 ],
-    ["Dept. of Health and Human Services", 469 ],
+    ["Dept. of Health and Human Services", 469],
     ["Dept. of Homeland Security ", 16.2 ],
     ["Dept. of Housing and Urban Development",  37.8 ],
     ["Dept. of the Interior", 9.82 ],
@@ -21,7 +21,6 @@ var data00 = [
     ["NASA", 16.5 ],
     ["Social Security Administration", 542 ],
     ["+Other Departments and Agencies", 131],
-    ["Undistributed Offsetting Receipts", -212]
 ];
 var data17 = [
     ["Dept. of Agriculture", 133],
@@ -45,17 +44,42 @@ var data17 = [
     ["NASA", 16.9],
     ["Social Security Administration", 908],
     ["+Other Departments and Agencies", 12.1],
-    ["Undistributed Offsetting Receipts", -225]
 ];
 
+var year = 2000;
+
 var chart = d3.select(".chart");
+var button = document.getElementById("button");
+var title = document.getElementById("title");
+
+var change = function(data) {
+    var barEnter = chart.selectAll("div").data(data).enter().append("div");
+    barEnter.transition().duration( function(d, i) {
+            return 10000 - (d[1] * 10) + i * 500;
+        }).style("width", function(d) {
+            return d[1] * 2 + "px";
+        });
+    barEnter.text(function(d) { return d[0]; });
+}
 
 var setup = function() {
-    var barEnter = chart.selectAll("div").data(data00).enter().append("div");
-    barEnter.transition().duration( function(d, i) {
-            return d[1] * 20 + i * 100;
-        }).style("width", function(d) {
-            return d[1] + " px";
-        });
+    change(data00);
 }
+
+var buttonChange = function(e) {
+    chart.selectAll("*").remove();
+    if (year == 2000) {
+        change(data17);
+        button.innerHTML = "2000 Data";
+        title.innerHTML = "2017 Data Agency Info";
+        year = 2017;
+    } else {
+        change(data00);
+        button.innerHTML = "2017 Data";
+        title.innerHTML = "2000 Data Agency Info";
+        year = 2000;
+    }
+}
+
 setup();
+button.addEventListener("click", buttonChange);
